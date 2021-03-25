@@ -435,6 +435,18 @@ Points-to analysis is more precise, showing that Cat.saySomething() is the only 
 
 #### Part 3
 
+Logging Method Calls
+
 r1 = staticinvoke <a1.Example: a1.Animal selectAnimal()>()
 virtualinvoke r1.<a1.Animal: void saySomething()>()
+
+Tracing Heap Accesses
+
+Thread Thread-5 wrote static field <a1.HelloThread: int x>
+Thread Thread-6 wrote static field <a1.HelloThread: int x>
+Thread Thread-6 read instance field <a1.HelloThread$TestThread: int y> of object r0.<a1.HelloThread$TestThread: int y>
+Thread Thread-6 wrote instance field <a1.HelloThread$TestThread: int y> of object r0.<a1.HelloThread$TestThread: int y>
+Thread Thread-5 read instance field <a1.HelloThread$TestThread: int y> of object $r2.<a1.HelloThread$TestThread: int y>
+Thread Thread-5 read static field <a1.HelloThread: int x>
+Thread Thread-5 read static field <java.lang.System: java.io.PrintStream out>
 

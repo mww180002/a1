@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+
 import polyglot.visit.DataFlow.Item;
 import soot.*;
 import soot.jimple.AssignStmt;
@@ -23,6 +25,7 @@ import soot.jimple.StaticFieldRef;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
+import soot.jimple.internal.JAssignStmt;
 import soot.options.Options;
 import soot.tagkit.Host;
 import soot.tagkit.Tag;
@@ -74,20 +77,37 @@ public class TestSootLoggingHeap extends BodyTransformer {
 		    	Stmt stmt = (Stmt)it.next();
 		    	if (stmt.containsFieldRef()) {
 		    		
+		    		Boolean isWrite = false;
+	    			Boolean isStatic = false;
+	    			
+	    			
+		    		if(stmt.getClass().getSimpleName().equals("JAssignStmt")) {
+		    			
+		    			 Value left = ((JAssignStmt) stmt).getLeftOp();
+		    			 Value right = ((JAssignStmt) stmt).getRightOp();
+		    			 
+		    			 if(left.getClass().getSimpleName( ).equals("StaticFieldRef")||
+		    					 left.getClass().getSimpleName().equals("JInstanceFieldRef")) {
+		    				 isWrite = true;
+		    			 }
+		    			
+		    			
+		    		}
+		    		
+		    		
 		    		FieldRef ref = stmt.getFieldRef();
 		    		
-		    		String name = ref.getField().getName();
-		    		
-		    		boolean isStatic = false;
-		    		if (ref instanceof StaticFieldRef) {
+		    		if (ref.getFieldRef().isStatic()) {
 		    			isStatic = true;
 		    		}
 		    		
 		    		
-		    		boolean isWrite = false;
+		    		String name = ref.getField().getSignature();
 		    		
 		    		
-		    		Log.logFieldAcc(stmt, name, isStatic, isWrite);
+		    		
+		    		
+		    		Log.logFieldAcc(ref, name, isStatic, isWrite);
 		    	}
 		    }
 		}
